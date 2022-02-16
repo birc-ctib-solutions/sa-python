@@ -1,6 +1,6 @@
 from sa_bsearch import (
-    SearchSpace,
-    SearchRange,
+    search_space,
+    search_range,
     lower, upper, block,
     sa_bsearch
 )
@@ -17,8 +17,8 @@ def test_mississippi():
         print(f"{i:>2} {j:>2}", x[j:])
     print()
 
-    space = SearchSpace(x, sa)
-    srange = SearchRange(0, 1, len(sa))
+    space = search_space(x, sa)
+    srange = search_range(0, 1, len(sa))
 
     # we don't find "a" but find the lower and upper bound at 1
     assert lower("a", srange, space) == 1

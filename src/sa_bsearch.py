@@ -17,8 +17,17 @@ class SARange:
             yield self.sa[i]
 
 
+@dataclass
+class InfiniteString:
+    """Turns out-of-bounds index into sentinels."""
+    _x: str
+
+    def __getitem__(self, i: int) -> str:
+        return self._x[i] if i < len(self._x) else chr(0)
+
+
 class SearchSpace(NamedTuple):
-    x: str
+    x: InfiniteString
     sa: list[int]
 
 
@@ -26,6 +35,14 @@ class SearchRange(NamedTuple):
     offset: int
     lo: int
     hi: int
+
+
+def search_space(x: str, sa: list[int]) -> SearchSpace:
+    return SearchSpace(InfiniteString(x), sa)
+
+
+def search_range(offset: int, lo: int, hi: int) -> SearchRange:
+    return SearchRange(offset, lo, hi)
 
 
 def lower(a: str, srange: SearchRange, space: SearchSpace) -> int:
@@ -56,8 +73,8 @@ def block(a: str, srange: SearchRange, space: SearchSpace) -> SearchRange:
 
 
 def sa_bsearch(p: str, x: str, sa: list[int]) -> SARange:
-    space = SearchSpace(x, sa)
-    srange = SearchRange(offset=0, lo=1, hi=len(sa))  # lo=1 to avoid $
+    space = search_space(x, sa)
+    srange = search_range(0, 0, len(sa))
     for a in p:
         srange = block(a, srange, space)
         if srange.lo == srange.hi:
